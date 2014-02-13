@@ -1,7 +1,31 @@
+from ConfigParser import SafeConfigParser
 from bottle import Bottle, run, static_file
+import morfessor
 
 demo = Bottle()
 
+def load_models():
+    io = morfessor.MorfessorIO()
+    scp = SafeConfigParser()
+    scp.read('config')
+
+    metadata = []
+    models = {}
+
+    for section in scp.sections():
+        key = section
+        lang = scp.get(key, 'lang')
+        desc = scp.get(key, 'desc')
+
+        metadata.append((key, lang, desc))
+
+        models[key] = io.read_binary_model_file('models/{}'.format(scp.get(key, 'model')))
+        if scp.has_option(key, 'annomodel'):
+            models["{}anno".format(key)] = io.read_binary_model_file('models/{}'.format(scp.get(key, 'annomodel')))
+
+    return metadata, models
+
+metadata, models = load_models()
 
 @demo.route('/')
 def htmlpage():
@@ -10,10 +34,10 @@ def htmlpage():
 
 @demo.route('/static/<filename>')
 def staticfiles(filename):
-    return static_file(filename, root='./static')
+    return static_file(filename, root='./static/static')
 
 
-@demo.route()
+@demo.route('/models')
 def get_models():
     return dict(models=[('Estonian', 'est', '3.908.820 word forms'),
                         ('Finnish', 'fin', '2.206.719 word forms'),

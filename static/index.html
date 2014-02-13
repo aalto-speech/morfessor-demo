@@ -9,6 +9,14 @@
 <script type="text/javascript"
   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<script>
+    $( document ).ready(function() {
+        console.log( "document loaded" );
+        $.getJSON('models', function(resp) {
+            console.log(resp)
+        })
+    });
+</script>
 </head>
 
 <body>
