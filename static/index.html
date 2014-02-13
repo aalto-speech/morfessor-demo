@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="description" content="Morfessor Demo">
+<title>Morfessor 2.0 Demo</title>
+<link rel=stylesheet type="text/css" href="static/style.css">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</head>
+
+<body>
+
+
+<div style="float:right; margin: 2ex 2ex 2ex 2ex;">
+<div style='margin-bottom: 10px'>
+<img src="static/front_morpho.gif" alt="Morpheme lattice">
+<img src="static/logo.png" width='100' alt="Aalto logo"></div>
+</div>
+<h1>Morfessor segmentation demo</h1>
+<div style='margin-bottom: 1em; float:left'>
+<table id='langtable'>
+<tr><th>Language</th><th>Size</th></tr>
+<tr><td>Estonian</td><td><input type="radio" />3.908.820 word forms</td></tr>
+<tr><td>Finnish</td><td><input type="radio" checked='checked' />2.206.719 word forms</td></tr>
+<tr><td>Turkish</td><td><input type="radio" />617.298 word forms</td></tr>
+<tr><td>English</td><td><input type="radio" />384.903 word forms</td></tr>
+</table>
+</div>
+
+<div style='margin-bottom: 1em; float:left; margin-left: 3em; margin-top: 1em'>
+<input type='text' value='kansanedustaja' /> <button>Segment</button><br />
+<span style='font-style: italic'>Word was processed in 3 miliseconds</span><br /><br />
+<span style='color: green; font-size:0.9em'>Correct segmentations are shown in green</span>
+</div>
+
+<div style='float:left; text-align: center; clear: left'>
+<span style='font-size: 1em; font-style: italic; '>Unsupervised</span>
+<hl>
+<table style='text-align: left'>
+<tr><td><span style='font-size:3.26em'>kansanedustaja</span></td><td>11.8<td></tr>
+<tr><td><span style='font-size:1.94em'>kansan + edustaja</span></td><td>19.9<td></tr>
+<tr><td><span style='font-size:1.86em'>kansanedus + taja</span></td><td>20.7<td></tr>
+<tr><td><span style='font-size:1.47em'>kansa + n + edustaja</span></td><td>26.1<td></tr>
+<tr><td><span style='font-size:1.46em'>kansan + edusta + ja</span></td><td>26.5<td></tr>
+</table>
+</div> 
+
+
+<div style='float:left; margin-left:1em; text-align: center'>
+<span style='font-size: 1em; font-style: italic; '>Semi-supervised (1000 annotations)</span>
+<hl>
+<table style='text-align: left'>
+<tr><td><span style='font-size:2.21em; color:green'>kansa + n + edusta + ja</span></td><td>26.5<td></tr>
+<tr><td><span style='font-size:2.01em'>kansa + n + edust + aja</span></td><td>29.3<td></tr>
+<tr><td><span style='font-size:1.95em'>kansa + n + edusta + j + a</span></td><td>30.1<td></tr>
+<tr><td><span style='font-size:1.93em'>kansa + n + edust + a + ja</span></td><td>30.3<td></tr>
+<tr><td><span style='font-size:1.90em'>kansa + n + edu + sta + ja</span></td><td>30.9<td></tr>
+</table>
+</div> 
+
+</body>
+</html>
