@@ -1,0 +1,4 @@
+morfessor-demo
+==============
+
+Morfessor demonstration
