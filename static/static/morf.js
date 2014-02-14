@@ -14,7 +14,8 @@ function load_model_box() {
                         id: 'model-'+idx,
                         type: 'radio',
                         name: 'model',
-                        value: model[1]
+                        value: model[1],
+                        checked: idx==0
                     }),
                     $("<label>").attr({
                         id: 'lbl-model-'+idx,
@@ -22,12 +23,33 @@ function load_model_box() {
                     }).text(model[2])
                 )
             ));
-        })
+        });
     });
 }
 
-function make_result_table(table, result) {
-    table.append($("<tr>").append("<td>").text(result));
+function make_result_table(table, results) {
+//    var total_weight_sum =
+    //<tr><td><span style='font-size:3.26em'>kansanedustaja</span></td><td>11.8<td></tr>
+    var total_font_size = 10;
+
+    table.empty();
+    $.each(results, function (idx, result) {
+        table.append(
+            $("<tr>").append(
+                $("<td>").append(
+                    $("<span>")
+                        .text(result.segm.join(" + "))
+                        .css('font-size', (result.fsize * total_font_size) + 'em')
+                ),
+                $("<td>").text(result.cost.toFixed(1))
+            ))
+    })
+}
+
+function do_segmentation() {
+    var model = $('input[name=model]:checked').val();
+    var word = $('#word').val();
+    fetch_segmentation(model, word);
 }
 
 function fetch_segmentation(model, word) {

@@ -6,12 +6,15 @@
 <title>Morfessor 2.0 Demo</title>
 <link rel=stylesheet type="text/css" href="static/style.css">
 <script type="text/javascript" src="static/jquery-2.1.0.js"></script>
-<!--<script type="text/javascript"-->
-  <!--src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">-->
-<!--</script>-->
 <script type="text/javascript" src="static/morf.js"></script>
 <script type="text/javascript">
-    $( document ).ready(load_model_box);
+    $( document ).ready(function() {
+        load_model_box();
+        $("#word").on("input", function () {
+            console.log("Word changes");
+            do_segmentation();
+        });
+    });
 </script>
 </head>
 
@@ -33,7 +36,7 @@
 </div>
 
 <div id='inputbox'>
-    <input type='text' value='kansanedustaja' /> <button>Segment</button>
+    <input id='word' type='text' value='kansanedustaja' /> <button onclick="do_segmentation()">Segment</button>
     <br />
     <span style='font-style: italic'>Word was processed in 3 miliseconds</span>
     <br /><br />

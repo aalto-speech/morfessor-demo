@@ -4,6 +4,7 @@ import morfessor
 
 demo = Bottle()
 
+
 def load_models():
     io = morfessor.MorfessorIO()
     scp = SafeConfigParser()
@@ -27,6 +28,7 @@ def load_models():
 
 metadata, models = load_models()
 
+
 @demo.route('/')
 def htmlpage():
     return static_file('index.html', root='./static')
@@ -46,13 +48,23 @@ def get_models():
                         ])
 
 
+def format_nbest(nbest):
+    costs = [n[1] for n in nbest]
+    mc = max(costs)
+    rels = [mc/c for c in costs]
+    fonts = [r / sum(rels) for r in rels]
+
+    return [{'segm': n[0], 'cost': n[1], 'fsize': f}
+            for n, f in zip(nbest, fonts)]
+
+
 @demo.route('/segment/<model>/<word>')
 def segment_word(model, word):
     result = {}
-    result['standard'] = models[model].viterbi_nbest(word, 5)
+    result['standard'] = format_nbest(models[model].viterbi_nbest(word, 5))
     anno_model = "{}anno".format(model)
     if anno_model in models:
-        result['anno'] = models[anno_model].viterbi_nbest(word, 5)
+        result['anno'] = format_nbest(models[anno_model].viterbi_nbest(word, 5))
 
     return result
 
