@@ -46,5 +46,16 @@ def get_models():
                         ])
 
 
+@demo.route('/segment/<model>/<word>')
+def segment_word(model, word):
+    result = {}
+    result['standard'] = models[model].viterbi_nbest(word, 5)
+    anno_model = "{}anno".format(model)
+    if anno_model in models:
+        result['anno'] = models[anno_model].viterbi_nbest(word, 5)
+
+    return result
+
+
 if __name__ == "__main__":
     run(demo, host='localhost', port=8080)
