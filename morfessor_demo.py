@@ -18,7 +18,7 @@ def load_models():
         lang = scp.get(key, 'lang')
         desc = scp.get(key, 'desc')
 
-        metadata.append((key, lang, desc))
+        metadata.append((lang, key, desc))
 
         models[key] = io.read_binary_model_file('models/{}'.format(scp.get(key, 'model')))
         if scp.has_option(key, 'annomodel'):
@@ -41,11 +41,7 @@ def staticfiles(filename):
 
 @demo.route('/models')
 def get_models():
-    return dict(models=[('Estonian', 'est', '3.908.820 word forms'),
-                        ('Finnish', 'fin', '2.206.719 word forms'),
-                        ('Turkish', 'tur', '617.298 word forms'),
-                        ('English', 'eng', '384.903 word forms'),
-                        ])
+    return dict(models=metadata)
 
 
 def format_nbest(nbest):

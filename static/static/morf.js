@@ -1,3 +1,11 @@
+var typewatch = (function(){
+  var timer = 0;
+  return function(callback, ms){
+    clearTimeout (timer);
+    timer = setTimeout(callback, ms);
+  }
+})();
+
 
 function load_model_box() {
 

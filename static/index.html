@@ -12,7 +12,7 @@
         load_model_box();
         $("#word").on("input", function () {
             console.log("Word changes");
-            do_segmentation();
+            typewatch(do_segmentation, 300);
         });
     });
 </script>
@@ -36,9 +36,9 @@
 </div>
 
 <div id='inputbox'>
-    <input id='word' type='text' value='kansanedustaja' /> <button onclick="do_segmentation()">Segment</button>
+    <input id='word' type='text' value='' /> <button onclick="do_segmentation()">Segment</button>
     <br />
-    <span style='font-style: italic'>Word was processed in 3 miliseconds</span>
+    <span style='font-style: italic'>Word was processed,... very fast</span>
     <br /><br />
     <span style='color: green; font-size:0.9em'>Correct segmentations are shown in green</span>
 </div>
@@ -47,11 +47,6 @@
 <span style='font-size: 1em; font-style: italic; '>Unsupervised</span>
 
 <table style='text-align: left'>
-<tr><td><span style='font-size:3.26em'>kansanedustaja</span></td><td>11.8<td></tr>
-<tr><td><span style='font-size:1.94em'>kansan + edustaja</span></td><td>19.9<td></tr>
-<tr><td><span style='font-size:1.86em'>kansanedus + taja</span></td><td>20.7<td></tr>
-<tr><td><span style='font-size:1.47em'>kansa + n + edustaja</span></td><td>26.1<td></tr>
-<tr><td><span style='font-size:1.46em'>kansan + edusta + ja</span></td><td>26.5<td></tr>
 </table>
 </div> 
 
@@ -59,11 +54,6 @@
 <div id='result2' class='resultbox' style='margin-left:1em;'>
 <span style='font-size: 1em; font-style: italic; '>Semi-supervised (1000 annotations)</span>
 <table style='text-align: left'>
-<tr><td><span style='font-size:2.21em; color:green'>kansa + n + edusta + ja</span></td><td>26.5<td></tr>
-<tr><td><span style='font-size:2.01em'>kansa + n + edust + aja</span></td><td>29.3<td></tr>
-<tr><td><span style='font-size:1.95em'>kansa + n + edusta + j + a</span></td><td>30.1<td></tr>
-<tr><td><span style='font-size:1.93em'>kansa + n + edust + a + ja</span></td><td>30.3<td></tr>
-<tr><td><span style='font-size:1.90em'>kansa + n + edu + sta + ja</span></td><td>30.9<td></tr>
 </table>
 </div> 
 
