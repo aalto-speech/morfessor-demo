@@ -2,6 +2,9 @@ from ConfigParser import SafeConfigParser
 from bottle import Bottle, run, static_file
 import morfessor
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 demo = Bottle()
 
 
@@ -64,6 +67,20 @@ def segment_word(model, word):
 
     return result
 
+@demo.route("/info/<modelname>")
+def model_info(modelname):
+    model = models[modelname]
+    result = {}
+    result['num_compounds'] = model._num_compounds if model._segment_only else len(model.get_compounds())
+    result['corpus_weight'] = model._corpus_coding.weight
+    result['num_morphs'] = len(model.get_constructions())
+
+    result['supervised'] = model._supervised
+    if model._supervised:
+        result['num_annotations'] = len(model.annotations)
+        result['annotation_weight'] = model._annot_coding.weight
+
+    return result
 
 if __name__ == "__main__":
-    run(demo, host='localhost', port=8080)
+    run(demo, host="0.0.0.0", port=8080)

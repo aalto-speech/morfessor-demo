@@ -16,6 +16,11 @@ function load_model_box() {
 
         $.each(resp.models, function(idx, model) {
             $tbody.append($("<tr>").append(
+//                $("<td>").append
+//                    ($("<img>")
+//                        .attr({src:'static/information_source.png'})
+//                        .height('1em')
+//                    ),
                 $("<td>").text(model[0]),
                 $("<td>").append(
                     $("<input>").attr({
@@ -24,7 +29,7 @@ function load_model_box() {
                         name: 'model',
                         value: model[1],
                         checked: idx==0
-                    }),
+                    }).change(select_model),
                     $("<label>").attr({
                         id: 'lbl-model-'+idx,
                         for: 'model-'+idx
@@ -32,7 +37,33 @@ function load_model_box() {
                 )
             ));
         });
+        select_model();
     });
+}
+
+function select_model() {
+    "use strict";
+    var model = $('input[name=model]:checked').val()
+    console.log(model + " selected");
+
+    $.getJSON('info/'+model, function(resp) {
+        console.log(resp);
+        var $infobox = $("#infobox");
+        $infobox.empty();
+
+        var $list = $("<dl>");
+
+        $list.append($("<dt>").text("Num word forms"))
+            .append($("<dd>").text(resp.num_compounds));
+
+        $list.append($("<dt>").text("Num morph types"))
+            .append($("<dd>").text(resp.num_morphs));
+
+        $list.append($("<dt>").text("Corpusweight"))
+            .append($("<dd>").text(resp.corpus_weight));
+
+        $infobox.append($list);
+    })
 }
 
 function make_result_table(table, results) {

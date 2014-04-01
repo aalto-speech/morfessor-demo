@@ -12,7 +12,7 @@
         load_model_box();
         $("#word").on("input", function () {
             console.log("Word changes");
-            typewatch(do_segmentation, 300);
+            typewatch(do_segmentation, 3);
         });
     });
 </script>
@@ -30,17 +30,20 @@
 
 <div id='langselectionbox'>
     <table id='langtable'>
-        <thead><tr><th>Language</th><th>Size</th></tr></thead>
+        <thead><tr><th></th><th>Language</th><th>Size</th></tr></thead>
         <tbody ></tbody>
     </table>
 </div>
 
 <div id='inputbox'>
     <input id='word' type='text' value='' /> <button onclick="do_segmentation()">Segment</button>
-    <br />
-    <span style='font-style: italic'>Word was processed,... very fast</span>
-    <br /><br />
-    <span style='color: green; font-size:0.9em'>Correct segmentations are shown in green</span>
+    <!--<br />-->
+    <!--<span style='font-style: italic'>Word was processed,... very fast</span>-->
+    <!--<br /><br />-->
+    <!--<span style='color: green; font-size:0.9em'>Correct segmentations are shown in green</span>-->
+</div>
+<div id="infobox">
+
 </div>
 
 <div id='result1' class='resultbox' style='clear: left'>
