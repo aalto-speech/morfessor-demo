@@ -46,6 +46,8 @@ function select_model() {
     var model = $('input[name=model]:checked').val()
     console.log(model + " selected");
 
+    $('#word').val("");
+
     $.getJSON('info/'+model, function(resp) {
         console.log(resp);
         var $infobox = $("#infobox");
@@ -62,8 +64,35 @@ function select_model() {
         $list.append($("<dt>").text("Corpusweight"))
             .append($("<dd>").text(resp.corpus_weight));
 
-        $infobox.append($list);
+        $infobox.append($("<div>").addClass("subinfo").append($list));
+
+        if (resp.supervised) {
+            $list = $("<dl>");
+
+            $list.append($("<dt>").text("Num annotations"))
+            .append($("<dd>").text(resp.num_annotations));
+
+            $list.append($("<dt>").text("Annotationweight"))
+            .append($("<dd>").text(resp.annotation_weight));
+
+            $infobox.append($("<div>").class("subinfo").append($list));
+        }
+
+        var $special_chars = $("#special_chars");
+        $special_chars.empty();
+
+        var $inputbox = $('#word');
+        $.each(resp.special_chars, function(idx, char) {
+            $special_chars.append($("<button>").text(char).on('click', function() {
+                $inputbox.focus();
+                var orig_word = $inputbox.val();
+                $inputbox.val(orig_word + char);
+                do_segmentation();
+            }));
+        });
     })
+
+
 }
 
 function make_result_table(table, results) {
@@ -87,7 +116,7 @@ function make_result_table(table, results) {
 
 function do_segmentation() {
     var model = $('input[name=model]:checked').val();
-    var word = $('#word').val();
+    var word = $('#word').val().toLowerCase();
     fetch_segmentation(model, word);
 }
 
@@ -98,7 +127,9 @@ function fetch_segmentation(model, word) {
     $result1_table.empty();
     $result2_table.empty();
 
-    $.getJSON('segment/'+model+'/'+word, function(resp) {
+    if (word.length == 0) return;
+
+    $.getJSON('segment/'+encodeURIComponent(model)+'/'+encodeURIComponent(word), function(resp) {
         console.log(resp);
 
         make_result_table($result1_table, resp.standard);
