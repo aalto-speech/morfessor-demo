@@ -104,6 +104,7 @@ function select_model() {
 
 function clear_results() {
     "use strict";
+    $("#resultcorrect").hide();
     $("#result1").find("table").empty();
     $("#result2").hide().find("table").empty();
     $("#word").focus();
@@ -131,6 +132,7 @@ function make_result_table(table, results) {
 }
 
 function do_segmentation() {
+    clear_results();
     var model = $('input[name=model]:checked').val();
     var word = $('#word').val().toLowerCase();
     fetch_segmentation(model, word);
@@ -140,8 +142,8 @@ function fetch_segmentation(model, word) {
     var $result1_table = $("#result1").find("table");
     var $result2_table = $("#result2").find("table");
 
-    $result1_table.empty();
-    $result2_table.empty();
+//    $result1_table.empty();
+//    $result2_table.empty();
 
     if (word.length == 0) return;
 
