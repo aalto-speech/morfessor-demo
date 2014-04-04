@@ -16,11 +16,6 @@ function load_model_box() {
 
         $.each(resp.models, function(idx, model) {
             $tbody.append($("<tr>").append(
-//                $("<td>").append
-//                    ($("<img>")
-//                        .attr({src:'static/information_source.png'})
-//                        .height('1em')
-//                    ),
                 $("<td>").text(model[0]),
                 $("<td>").append(
                     $("<input>").attr({
@@ -90,10 +85,27 @@ function select_model() {
                 do_segmentation();
             }));
         });
+
+        if (resp.hasOwnProperty('evalwords')) {
+            var $button = $("#randword");
+            $button.show();
+            $button.on('click', function () {
+                $("#word").val(resp.evalwords[Math.floor(Math.random()*resp.evalwords.length)])
+                do_segmentation();
+            })
+        } else {
+            $("#randword").hide();
+        }
     });
 
+    clear_results();
+
+}
+
+function clear_results() {
+    "use strict";
     $("#result1").find("table").empty();
-    $("#result2").find("table").empty();
+    $("#result2").hide().find("table").empty();
     $("#word").focus();
 
 }
@@ -111,6 +123,7 @@ function make_result_table(table, results) {
                     $("<span>")
                         .text(result.segm.join(" + "))
                         .css('font-size', (result.fsize * total_font_size) + 'em')
+                        .css('color', result.correct ? 'green' : 'black')
                 ),
                 $("<td>").text(result.cost.toFixed(1))
             ))
@@ -138,7 +151,25 @@ function fetch_segmentation(model, word) {
         make_result_table($result1_table, resp.standard);
 
         if("anno" in resp) {
+            $("#result2").show();
             make_result_table($result2_table, resp.anno);
+        }
+
+        if("correct" in resp) {
+            $result_correct = $("#resultcorrect");
+            $result_correct.show();
+            var $correct_table = $result_correct.find("table");
+            $correct_table.empty();
+            $.each(resp.correct, function (idx, result) {
+                $correct_table.append(
+                    $("<tr>").append(
+                        $("<td>").append(
+                            $("<span>")
+                                .text(result.join(" + "))
+
+                        )
+                    ))
+    })
         }
 
     });
