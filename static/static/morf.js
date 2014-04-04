@@ -75,7 +75,7 @@ function select_model() {
             $list.append($("<dt>").text("Annotationweight"))
             .append($("<dd>").text(resp.annotation_weight));
 
-            $infobox.append($("<div>").class("subinfo").append($list));
+            $infobox.append($("<div>").addClass("subinfo").append($list));
         }
 
         var $special_chars = $("#special_chars");
@@ -90,8 +90,11 @@ function select_model() {
                 do_segmentation();
             }));
         });
-    })
+    });
 
+    $("#result1").find("table").empty();
+    $("#result2").find("table").empty();
+    $("#word").focus();
 
 }
 
