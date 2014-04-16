@@ -1,0 +1,43 @@
+[fin]
+lang = Finnish
+model = fin.bin
+annomodel = fin_anno.bin
+desc = 2.206.719 word forms
+evalset = fin.eval
+
+[est]
+lang = Estonian
+model = est.bin
+annomodel = est_anno.bin
+desc = 3.908.820 word forms
+
+[tur]
+lang = Turkish
+model = tur.bin
+annomodel = tur_anno.bin
+desc = 617.298 word forms
+evalset = tur.eval
+
+[eng]
+lang = English
+model = eng.bin
+annomodel = eng_anno.bin
+desc = 384.903 word forms
+evalset = eng.eval
+
+[swe]
+lang = Swedish
+model = swe.bin
+;annomodel = swe.anno.bin
+desc = 92.237 word forms
+
+[ger]
+lang = German
+model = ger.bin
+;annomodel = ger.anno.bin
+desc = 1.266.159 word forms
+
+[rom]
+lang = Romanian
+model = rom.bin
+desc = temp model Mircea
