@@ -37,7 +37,7 @@ model = ger.bin
 ;annomodel = ger.anno.bin
 desc = 1.266.159 word forms
 
-[rom]
-lang = Romanian
-model = rom.bin
-desc = temp model Mircea
+;[rom]
+;lang = Romanian
+;model = rom.bin
+;desc = temp model Mircea
