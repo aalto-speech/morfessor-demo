@@ -39,7 +39,7 @@ model = ger.bin
 ;annomodel = ger.anno.bin
 desc = 1.266.159 word forms
 trainlist = ger.train
-notice = Please use ae instead of ä and ss instead of
+notice = Please use ae, oe, ue, ss instead of ä, ö, ü and ß
 
 ;[rom]
 ;lang = Romanian

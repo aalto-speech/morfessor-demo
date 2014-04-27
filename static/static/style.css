@@ -40,20 +40,26 @@ background-color:#FFFFEB;
     background-color: yellow;
 }
 #infobox {
+    clear: left;
     float: left;
     border: 1px solid black;
     border-radius: 3px;
     font-size: 80%;
     /*width: 200px;*/
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
 }
 
 #infobox dl {
-
-    background-color: #BBCCAA;
+    /*background-color: #BBCCAA;*/
+    padding: 0.2em;
 
 }
 #infobox dt {
     float:left;
+    clear:left;
+    width:100px;
+    text-align:right;
     /*width: 10em;*/
     /*overflow: hidden;*/
     clear:left;
@@ -61,11 +67,16 @@ background-color:#FFFFEB;
     padding-left: 0;
 }
 
+#infobox dt:after {
+    content: ":";
+}
+
 #infobox dd {
-    float: left;
+    margin: 0 0 0 110px;
+    padding: 0 0 0.2em 0;
 
     /*width: 7em;*/
-    background-color: #AABBCC;
+    /*background-color: #AABBCC;*/
 
     /*clear: both;*/
     /*overflow: hidden;*/
