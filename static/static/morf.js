@@ -86,13 +86,29 @@ function select_model() {
             }));
         });
 
+        if (resp.hasOwnProperty('notice')) {
+            $("#notice").text(resp.notice).show()
+        } else {
+            $("#notice").hide();
+        }
+
         if (resp.hasOwnProperty('evalwords')) {
             var $button = $("#randword");
+            $button.text("Random word");
             $button.show();
             $button.on('click', function () {
                 $("#word").val(resp.evalwords[Math.floor(Math.random()*resp.evalwords.length)])
                 do_segmentation();
             })
+        } else if (resp.hasOwnProperty('trainwords')) {
+            var $button = $("#randword");
+            $button.text("Random training word")
+            $button.show();
+            $button.on('click', function () {
+                $("#word").val(resp.trainwords[Math.floor(Math.random()*resp.trainwords.length)])
+                do_segmentation();
+            })
+
         } else {
             $("#randword").hide();
         }

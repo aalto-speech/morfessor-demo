@@ -10,6 +10,7 @@ lang = Estonian
 model = est.bin
 annomodel = est_anno.bin
 desc = 3.908.820 word forms
+trainlist = est.train
 
 [tur]
 lang = Turkish
@@ -30,12 +31,15 @@ lang = Swedish
 model = swe.bin
 ;annomodel = swe.anno.bin
 desc = 92.237 word forms
+trainlist = swe.train
 
 [ger]
 lang = German
 model = ger.bin
 ;annomodel = ger.anno.bin
 desc = 1.266.159 word forms
+trainlist = ger.train
+notice = Please use ae instead of ä and ss instead of
 
 ;[rom]
 ;lang = Romanian

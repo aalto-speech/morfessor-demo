@@ -20,6 +20,7 @@ def load_models():
     metadata = []
     models = {}
     wordlists = {}
+    notices = {}
 
     for section in scp.sections():
         key = section
@@ -35,15 +36,20 @@ def load_models():
         if scp.has_option(key, 'evalset'):
             wordlists["{}eval".format(key)] = io.read_annotations_file('models/{}'.format(scp.get(key,'evalset')))
 
+        if scp.has_option(key, 'trainlist'):
+            wordlists["{}train".format(key)] = list(io.read_corpus_list_file('models/{}'.format(scp.get(key,'trainlist'))))
 
-    return metadata, models, wordlists
+        if scp.has_option(key, 'notice'):
+            notices[key] = scp.get(key, 'notice')
+
+    return metadata, models, wordlists, notices
 
 
 def find_special_chars(model):
     all_chars = set(k for k,v in model._lexicon_coding.atoms.items() if v > 10)
     return list(all_chars - set(string.ascii_lowercase) - set(string.punctuation))
 
-metadata, models, wordlists = load_models()
+metadata, models, wordlists, notices = load_models()
 
 
 @demo.route('/')
@@ -97,6 +103,7 @@ def model_info(modelname):
     model = models[modelname]
     anno_modelname = "{}anno".format(modelname)
     eval_name = "{}eval".format(modelname)
+    trai_name = "{}train".format(modelname)
 
     result = {}
     result['num_compounds'] = model._num_compounds if model._segment_only else len(model.get_compounds())
@@ -114,6 +121,12 @@ def model_info(modelname):
 
     if eval_name in wordlists:
         result['evalwords'] = random.sample(wordlists[eval_name].keys(), 100)
+
+    if trai_name in wordlists:
+        result['trainwords'] = random.sample(list(w[1] for w in wordlists[trai_name]), 100)
+
+    if modelname in notices:
+        result['notice'] = notices[modelname]
     return result
 
 if __name__ == "__main__":

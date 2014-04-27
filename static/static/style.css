@@ -34,6 +34,11 @@ background-color:#FFFFEB;
     float:left;
 }
 
+#notice {
+    float:left;
+    display: none;
+    background-color: yellow;
+}
 #infobox {
     float: left;
     border: 1px solid black;
