@@ -57,7 +57,7 @@ function select_model() {
             .append($("<dd>").text(resp.num_morphs));
 
         $list.append($("<dt>").text("Corpusweight"))
-            .append($("<dd>").text(resp.corpus_weight));
+            .append($("<dd>").text(resp.corpus_weight.toFixed(2)));
 
         $infobox.append($("<div>").addClass("subinfo").append($list));
 
@@ -68,7 +68,7 @@ function select_model() {
             .append($("<dd>").text(resp.num_annotations));
 
             $list.append($("<dt>").text("Annotationweight"))
-            .append($("<dd>").text(resp.annotation_weight));
+            .append($("<dd>").text(resp.annotation_weight.toFixed(2)));
 
             $infobox.append($("<div>").addClass("subinfo").append($list));
         }
