@@ -1,3 +1,6 @@
 [submodule "morfessor-dev"]
 	path = morfessor-dev
 	url = git@github.com:aalto-speech/morfessor-dev.git
+[submodule "bottle"]
+	path = bottle
+	url = https://github.com/defnull/bottle
