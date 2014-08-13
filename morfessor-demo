@@ -1,4 +1,8 @@
+#!/usr/bin/env pypy
+
+from __future__ import print_function
 from ConfigParser import SafeConfigParser
+import os
 import string
 import random
 
@@ -7,15 +11,40 @@ from bottle import Bottle, run, static_file
 import morfessor
 
 import logging
+import sys
+
 logging.basicConfig(level=logging.INFO)
 
 demo = Bottle()
 
+possible_static_dirs = [[os.path.dirname(os.path.realpath(__file__)), 'static'],
+                           ['/', 'usr', 'share', 'morfessor-demo', 'static'],
+                           [os.path.dirname(os.path.realpath(__file__)), '..', 'share', 'morfessor-demo', 'static']]
+
+real_static_dir = './static'
+for psd in possible_static_dirs:
+    if os.path.exists(os.path.join(*psd)):
+        real_static_dir = os.path.join(*psd)
 
 def load_models():
+    possible_model_dirs = [[os.path.dirname(os.path.realpath(__file__)), 'models'],
+                           ['/', 'usr', 'share', 'morfessor-demo-data', 'models'],
+                           ['/', 'work', 'asr', 'demos', 'morfessor-demo', 'models']]
+
+    model_dir = None
+    for pmd in possible_model_dirs:
+        if os.path.exists(os.path.join(os.path.join(*pmd), 'config')):
+            model_dir = os.path.join(*pmd)
+            break
+
+    if model_dir is None:
+        sys.exit("Model dir not found")
+    else:
+        print("Using {} as model dir".format(model_dir))
+
     io = morfessor.MorfessorIO(encoding='utf-8')
     scp = SafeConfigParser()
-    scp.read('config')
+    scp.read(os.path.join(model_dir, 'config'))
 
     metadata = []
     models = {}
@@ -29,15 +58,15 @@ def load_models():
 
         metadata.append((lang, key, desc))
 
-        models[key] = io.read_binary_model_file('models/{}'.format(scp.get(key, 'model')))
+        models[key] = io.read_binary_model_file(os.path.join(model_dir, scp.get(key, 'model')))
         if scp.has_option(key, 'annomodel'):
-            models["{}anno".format(key)] = io.read_binary_model_file('models/{}'.format(scp.get(key, 'annomodel')))
+            models["{}anno".format(key)] = io.read_binary_model_file(os.path.join(model_dir, scp.get(key, 'annomodel')))
 
         if scp.has_option(key, 'evalset'):
-            wordlists["{}eval".format(key)] = io.read_annotations_file('models/{}'.format(scp.get(key,'evalset')))
+            wordlists["{}eval".format(key)] = io.read_annotations_file(os.path.join(model_dir, scp.get(key, 'evalset')))
 
         if scp.has_option(key, 'trainlist'):
-            wordlists["{}train".format(key)] = list(io.read_corpus_list_file('models/{}'.format(scp.get(key,'trainlist'))))
+            wordlists["{}train".format(key)] = list(io.read_corpus_list_file(os.path.join(model_dir, scp.get(key, 'trainlist'))))
 
         if scp.has_option(key, 'notice'):
             notices[key] = scp.get(key, 'notice')
@@ -54,12 +83,12 @@ metadata, models, wordlists, notices = load_models()
 
 @demo.route('/')
 def htmlpage():
-    return static_file('index.html', root='./static')
+    return static_file('index.html', root=real_static_dir)
 
 
 @demo.route('/static/<filename>')
 def staticfiles(filename):
-    return static_file(filename, root='./static/static')
+    return static_file(filename, root=os.path.join(real_static_dir, 'static'))
 
 
 @demo.route('/models')
