@@ -3,15 +3,18 @@
 from __future__ import print_function
 from ConfigParser import SafeConfigParser
 import os
+import sys
 import string
 import random
+
+os.chdir(os.path.dirname(__file__))
+sys.path.append(os.path.dirname(__file__))
 
 from bottle import Bottle, run, static_file
 
 import morfessor
 
 import logging
-import sys
 
 logging.basicConfig(level=logging.INFO)
 
