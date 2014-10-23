@@ -15,7 +15,7 @@ import sys
 
 logging.basicConfig(level=logging.INFO)
 
-demo = Bottle()
+application = demo = Bottle()
 
 possible_static_dirs = [[os.path.dirname(os.path.realpath(__file__)), 'static'],
                            ['/', 'usr', 'share', 'morfessor-demo', 'static'],
