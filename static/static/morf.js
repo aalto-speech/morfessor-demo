@@ -92,8 +92,10 @@ function select_model() {
             $("#notice").hide();
         }
 
+        var $button = $("#randword");
+        $button.unbind();
+
         if (resp.hasOwnProperty('evalwords')) {
-            var $button = $("#randword");
             $button.text("Random word");
             $button.show();
             $button.on('click', function () {
@@ -101,7 +103,6 @@ function select_model() {
                 do_segmentation();
             })
         } else if (resp.hasOwnProperty('trainwords')) {
-            var $button = $("#randword");
             $button.text("Random training word")
             $button.show();
             $button.on('click', function () {
@@ -110,7 +111,7 @@ function select_model() {
             })
 
         } else {
-            $("#randword").hide();
+            $button.hide();
         }
     });
 
