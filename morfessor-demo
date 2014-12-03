@@ -130,8 +130,8 @@ def segment_word(model, word):
 
     return result
 
-@demo.route("/info/<modelname>")
-def model_info(modelname):
+
+def model_info_pregen(modelname):
     model = models[modelname]
     anno_modelname = "{}anno".format(modelname)
     eval_name = "{}eval".format(modelname)
@@ -152,14 +152,23 @@ def model_info(modelname):
         result['annotation_weight'] = anno_model._annot_coding.weight
 
     if eval_name in wordlists:
-        result['evalwords'] = random.sample(wordlists[eval_name].keys(), 100)
+        result['evalwords'] = random.sample(wordlists[eval_name].keys(), 1000)
 
     if trai_name in wordlists:
-        result['trainwords'] = random.sample(list(w[1] for w in wordlists[trai_name]), 100)
+        result['trainwords'] = random.sample(list(w[1] for w in wordlists[trai_name]), 1000)
 
     if modelname in notices:
         result['notice'] = notices[modelname]
     return result
+
+
+info = {model:model_info_pregen(model) for model in models.keys() if not model.endswith('anno')}
+
+
+@demo.route("/info/<modelname>")
+def model_info(modelname):
+    return info[modelname]
+
 
 if __name__ == "__main__":
     run(demo, host="0.0.0.0", port=8080)
