@@ -41,6 +41,14 @@ desc = 1.266.159 word forms
 trainlist = ger.train.1000
 notice = Please use ae, oe, ue, ss instead of ä, ö, ü and ß
 
+[sme]
+lang = Sámi
+model = sme.bin
+annomodel = sme.anno.bin
+desc = 691.190 word forms
+evalset = sme.eval
+non_latin_chars = á č đ ŋ š ŧ ž
+
 ;[rom]
 ;lang = Romanian
 ;model = rom.bin

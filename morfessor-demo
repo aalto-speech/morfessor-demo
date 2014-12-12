@@ -53,6 +53,7 @@ def load_models():
     models = {}
     wordlists = {}
     notices = {}
+    spec_chars = {}
 
     for section in scp.sections():
         key = section
@@ -71,17 +72,19 @@ def load_models():
         if scp.has_option(key, 'trainlist'):
             wordlists["{}train".format(key)] = list(io.read_corpus_list_file(os.path.join(model_dir, scp.get(key, 'trainlist'))))
 
+        if scp.has_option(key, 'non_latin_chars'):
+            spec_chars[key] = scp.get(key, 'non_latin_chars').split()
         if scp.has_option(key, 'notice'):
             notices[key] = scp.get(key, 'notice')
 
-    return metadata, models, wordlists, notices
+    return metadata, models, wordlists, notices, spec_chars
 
 
 def find_special_chars(model):
     all_chars = set(k for k,v in model._lexicon_coding.atoms.items() if v > 10)
-    return list(all_chars - set(string.ascii_lowercase) - set(string.punctuation))
+    return list(all_chars - set(string.ascii_lowercase) - set(string.punctuation) - set(string.digits))
 
-metadata, models, wordlists, notices = load_models()
+metadata, models, wordlists, notices, spec_chars = load_models()
 
 
 @demo.route('/')
@@ -142,7 +145,10 @@ def model_info_pregen(modelname):
     result['corpus_weight'] = model._corpus_coding.weight
     result['num_morphs'] = len(model.get_constructions())
 
-    result['special_chars'] = find_special_chars(model)
+    if modelname in spec_chars:
+        result['special_chars'] = spec_chars[modelname]
+    else:
+        result['special_chars'] = find_special_chars(model)
 
     result['supervised'] = False
     if anno_modelname in models:
@@ -152,10 +158,10 @@ def model_info_pregen(modelname):
         result['annotation_weight'] = anno_model._annot_coding.weight
 
     if eval_name in wordlists:
-        result['evalwords'] = random.sample(wordlists[eval_name].keys(), 1000)
+        result['evalwords'] = random.sample(wordlists[eval_name].keys(), 1000) if len(wordlists[eval_name]) > 1000 else list(wordlists[eval_name].keys())
 
     if trai_name in wordlists:
-        result['trainwords'] = random.sample(list(w[1] for w in wordlists[trai_name]), 1000)
+        result['trainwords'] = random.sample(list(w[1] for w in wordlists[trai_name]), 1000) if len(wordlists[trai_name]) > 1000 else list(w[1] for w in wordlists[trai_name])
 
     if modelname in notices:
         result['notice'] = notices[modelname]
