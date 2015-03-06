@@ -22,18 +22,20 @@ logging.basicConfig(level=logging.INFO)
 application = demo = Bottle()
 
 possible_static_dirs = [[os.path.dirname(os.path.realpath(__file__)), 'static'],
-                           ['/', 'usr', 'share', 'morfessor-demo', 'static'],
+                           #['/', 'usr', 'share', 'morfessor-demo', 'static'],
                            [os.path.dirname(os.path.realpath(__file__)), '..', 'share', 'morfessor-demo', 'static']]
 
 real_static_dir = './static'
 for psd in possible_static_dirs:
     if os.path.exists(os.path.join(*psd)):
         real_static_dir = os.path.join(*psd)
+print("Using {} as static dir".format(real_static_dir))
 
 def load_models():
     possible_model_dirs = [[os.path.dirname(os.path.realpath(__file__)), 'models'],
-                           ['/', 'usr', 'share', 'morfessor-demo-data', 'models'],
-                           ['/', 'work', 'asr', 'demos', 'morfessor-demo', 'models']]
+                           #['/', 'usr', 'share', 'morfessor-demo-data', 'models'],
+                           #['/', 'work', 'asr', 'demos', 'morfessor-demo', 'models']]
+                           ]
 
     model_dir = None
     for pmd in possible_model_dirs:
