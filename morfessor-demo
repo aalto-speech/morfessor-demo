@@ -13,6 +13,7 @@ sys.path.append(os.path.dirname(__file__))
 from bottle import Bottle, run, static_file
 
 import morfessor
+import flatcat
 
 import logging
 
@@ -46,11 +47,13 @@ def load_models():
         print("Using {} as model dir".format(model_dir))
 
     io = morfessor.MorfessorIO(encoding='utf-8')
+    fcio = flatcat.FlatcatIO(encoding='utf-8')
     scp = SafeConfigParser()
     scp.read(os.path.join(model_dir, 'config'))
 
     metadata = []
     models = {}
+    mainmodels = []
     wordlists = {}
     notices = {}
     spec_chars = {}
@@ -62,9 +65,26 @@ def load_models():
 
         metadata.append((lang, key, desc))
 
-        models[key] = io.read_binary_model_file(os.path.join(model_dir, scp.get(key, 'model')))
+        mainmodel = None
+        if scp.has_option(key, 'model'):
+            models[key] = io.read_binary_model_file(os.path.join(model_dir, scp.get(key, 'model')))
+            mainmodel = key
+
         if scp.has_option(key, 'annomodel'):
-            models["{}anno".format(key)] = io.read_binary_model_file(os.path.join(model_dir, scp.get(key, 'annomodel')))
+            annokey = "{}anno".format(key)
+            models[annokey] = io.read_binary_model_file(os.path.join(model_dir, scp.get(key, 'annomodel')))
+            if mainmodel is None:
+                mainmodel = annokey
+
+        if scp.has_option(key, 'flatcatmodel'):
+            flatcatkey = "{}flatcat".format(key)
+            models[flatcatkey] = fcio.read_binary_model_file(
+                os.path.join(model_dir, scp.get(key, 'flatcatmodel')))
+            if mainmodel is None:
+                mainmodel = flatcatkey
+
+        if mainmodel is not None:
+            mainmodels.append(mainmodel)
 
         if scp.has_option(key, 'evalset'):
             wordlists["{}eval".format(key)] = io.read_annotations_file(os.path.join(model_dir, scp.get(key, 'evalset')))
@@ -77,14 +97,18 @@ def load_models():
         if scp.has_option(key, 'notice'):
             notices[key] = scp.get(key, 'notice')
 
-    return metadata, models, wordlists, notices, spec_chars
+    return metadata, mainmodels, models, wordlists, notices, spec_chars
 
 
 def find_special_chars(model):
-    all_chars = set(k for k,v in model._lexicon_coding.atoms.items() if v > 10)
+    try:
+        lexitems = model._all_chars.items()
+    except AttributeError:
+        lexitems = model._lexicon_coding.atoms.items()
+    all_chars = set(k for k,v in lexitems if v > 10)
     return list(all_chars - set(string.ascii_lowercase) - set(string.punctuation) - set(string.digits))
 
-metadata, models, wordlists, notices, spec_chars = load_models()
+metadata, mainmodels, models, wordlists, notices, spec_chars = load_models()
 
 
 @demo.route('/')
@@ -111,6 +135,11 @@ def format_nbest(nbest, correct):
     return [{'segm': tuple(n[0]), 'cost': n[1], 'fsize': f, 'correct': tuple(n[0]) in correct}
             for n, f in zip(nbest, fonts)]
 
+def format_onebest(best, correct):
+    detagged = tuple(unicode(x) for x in flatcat.FlatcatModel.detag_word(best[0]))
+    rendered = [unicode(x) for x in best[0]]
+    return [{'segm': rendered, 'cost': best[1], 'fsize': 0.3,
+            'correct': detagged in correct}]
 
 @demo.route('/segment/<model>/<word>')
 def segment_word(model, word):
@@ -122,28 +151,44 @@ def segment_word(model, word):
     if evalset in wordlists:
         if word in wordlists[evalset]:
             correct = set(tuple(x) for x in wordlists[evalset][word])
-            result['correct'] = list(correct)
+            result['correct'] = [[unicode(x) for x in w] for w in correct]
 
-
-    result['standard'] = format_nbest(models[model].viterbi_nbest(word, 5), correct)
+    if model in models:
+        result['standard'] = format_nbest(models[model].viterbi_nbest(word, 5), correct)
     anno_model = "{}anno".format(model)
     if anno_model in models:
         result['anno'] = format_nbest(models[anno_model].viterbi_nbest(word, 5), correct)
-
+    flatcat_model = "{}flatcat".format(model)
+    if flatcat_model in models:
+        result['flatcat'] = format_onebest(models[flatcat_model].viterbi_analyze(word), correct)
 
     return result
 
 
 def model_info_pregen(modelname):
-    model = models[modelname]
     anno_modelname = "{}anno".format(modelname)
+    flatcat_modelname = "{}flatcat".format(modelname)
     eval_name = "{}eval".format(modelname)
     trai_name = "{}train".format(modelname)
 
+    model = None
+    if modelname in models:
+        model = models[modelname]
+    elif anno_modelname in models:
+        model = models[anno_modelname]
+    else:
+        model = models[flatcat_modelname]
+
     result = {}
-    result['num_compounds'] = model._num_compounds if model._segment_only else len(model.get_compounds())
+    try:
+        result['num_compounds'] = model._num_compounds
+    except AttributeError:
+        result['num_compounds'] = model._num_compounds if model._segment_only else len(model.get_compounds())
     result['corpus_weight'] = model._corpus_coding.weight
-    result['num_morphs'] = len(model.get_constructions())
+    try:
+        result['num_morphs'] = model.num_constructions
+    except AttributeError:
+        result['num_morphs'] = len(model.get_constructions())
 
     if modelname in spec_chars:
         result['special_chars'] = spec_chars[modelname]
@@ -168,7 +213,7 @@ def model_info_pregen(modelname):
     return result
 
 
-info = {model:model_info_pregen(model) for model in models.keys() if not model.endswith('anno')}
+info = {model:model_info_pregen(model) for model in mainmodels}
 
 
 @demo.route("/info/<modelname>")
