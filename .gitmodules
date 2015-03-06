@@ -4,3 +4,6 @@
 [submodule "bottle"]
 	path = bottle
 	url = https://github.com/defnull/bottle
+[submodule "flatcat-dev"]
+	path = flatcat-dev
+	url = git@github.com:aalto-speech/flatcat.git
