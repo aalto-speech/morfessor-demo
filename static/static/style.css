@@ -27,6 +27,7 @@ background-color:#FFFFEB;
 
 .subinfo {
     float:left;
+    width: 400px;
 }
 
 #resultcorrect {
@@ -58,13 +59,14 @@ background-color:#FFFFEB;
 #infobox dt {
     float:left;
     clear:left;
-    width:100px;
+    width:125px;
     text-align:right;
     /*width: 10em;*/
     /*overflow: hidden;*/
     clear:left;
     margin-left: 0;
     padding-left: 0;
+    padding-bottom: 3px;
 }
 
 #infobox dt:after {
@@ -73,7 +75,8 @@ background-color:#FFFFEB;
 
 #infobox dd {
     margin: 0 0 0 110px;
-    padding: 0 0 0.2em 0;
+    padding: 0;
+    float: right;
 
     /*width: 7em;*/
     /*background-color: #AABBCC;*/

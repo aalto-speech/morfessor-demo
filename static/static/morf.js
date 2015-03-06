@@ -122,8 +122,9 @@ function select_model() {
 function clear_results() {
     "use strict";
     $("#resultcorrect").hide();
-    $("#result1").find("table").empty();
+    $("#result1").hide().find("table").empty();
     $("#result2").hide().find("table").empty();
+    $("#result3").hide().find("table").empty();
     $("#word").focus();
 
 }
@@ -158,6 +159,7 @@ function do_segmentation() {
 function fetch_segmentation(model, word) {
     var $result1_table = $("#result1").find("table");
     var $result2_table = $("#result2").find("table");
+    var $result3_table = $("#result3").find("table");
 
 //    $result1_table.empty();
 //    $result2_table.empty();
@@ -167,11 +169,19 @@ function fetch_segmentation(model, word) {
     $.getJSON('segment/'+encodeURIComponent(model)+'/'+encodeURIComponent(word), function(resp) {
         console.log(resp);
 
-        make_result_table($result1_table, resp.standard);
+        if("standard" in resp) {
+            $("#result1").show();
+            make_result_table($result1_table, resp.standard);
+        }
 
         if("anno" in resp) {
             $("#result2").show();
             make_result_table($result2_table, resp.anno);
+        }
+
+        if("flatcat" in resp) {
+            $("#result3").show();
+            make_result_table($result3_table, resp.flatcat);
         }
 
         if("correct" in resp) {
