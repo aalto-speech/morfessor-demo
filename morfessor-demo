@@ -86,7 +86,7 @@ def load_models():
                 mainmodel = flatcatkey
 
         if mainmodel is not None:
-            mainmodels.append(mainmodel)
+            mainmodels.append((key, mainmodel))
 
         if scp.has_option(key, 'evalset'):
             wordlists["{}eval".format(key)] = io.read_annotations_file(os.path.join(model_dir, scp.get(key, 'evalset')))
@@ -167,19 +167,13 @@ def segment_word(model, word):
     return result
 
 
-def model_info_pregen(modelname):
-    anno_modelname = "{}anno".format(modelname)
-    flatcat_modelname = "{}flatcat".format(modelname)
-    eval_name = "{}eval".format(modelname)
-    trai_name = "{}train".format(modelname)
+def model_info_pregen(key, modelname):
+    anno_modelname = "{}anno".format(key)
+    flatcat_modelname = "{}flatcat".format(key)
+    eval_name = "{}eval".format(key)
+    trai_name = "{}train".format(key)
 
-    model = None
-    if modelname in models:
-        model = models[modelname]
-    elif anno_modelname in models:
-        model = models[anno_modelname]
-    else:
-        model = models[flatcat_modelname]
+    model = models[modelname]
 
     result = {}
     try:
@@ -192,8 +186,8 @@ def model_info_pregen(modelname):
     except AttributeError:
         result['num_morphs'] = len(model.get_constructions())
 
-    if modelname in spec_chars:
-        result['special_chars'] = spec_chars[modelname]
+    if key in spec_chars:
+        result['special_chars'] = spec_chars[key]
     else:
         result['special_chars'] = find_special_chars(model)
 
@@ -210,12 +204,12 @@ def model_info_pregen(modelname):
     if trai_name in wordlists:
         result['trainwords'] = random.sample(list(w[1] for w in wordlists[trai_name]), 1000) if len(wordlists[trai_name]) > 1000 else list(w[1] for w in wordlists[trai_name])
 
-    if modelname in notices:
-        result['notice'] = notices[modelname]
+    if key in notices:
+        result['notice'] = notices[key]
     return result
 
 
-info = {model:model_info_pregen(model) for model in mainmodels}
+info = {key: model_info_pregen(key, model) for (key, model) in mainmodels}
 
 
 @demo.route("/info/<modelname>")
