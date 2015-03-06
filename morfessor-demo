@@ -192,8 +192,12 @@ def model_info_pregen(key, modelname):
         result['special_chars'] = find_special_chars(model)
 
     result['supervised'] = False
+    anno_model = None
     if anno_modelname in models:
         anno_model = models[anno_modelname]
+    if flatcat_modelname in models:
+        anno_model = models[flatcat_modelname]
+    if anno_model is not None:
         result['supervised'] = True
         result['num_annotations'] = len(anno_model.annotations)
         result['annotation_weight'] = anno_model._annot_coding.weight
