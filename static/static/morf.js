@@ -66,6 +66,7 @@ function select_model() {
 
             $list.append($("<dt>").text("Num annotations"))
             .append($("<dd>").text(resp.num_annotations));
+            $('.annotcount').text(resp.num_annotations);
 
             $list.append($("<dt>").text("Annotationweight"))
             .append($("<dd>").text(resp.annotation_weight.toFixed(2)));
