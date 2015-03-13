@@ -34,7 +34,7 @@ print("Using {} as static dir".format(real_static_dir))
 def load_models():
     possible_model_dirs = [[os.path.dirname(os.path.realpath(__file__)), 'models'],
                            ['/', 'usr', 'share', 'morfessor-demo-data', 'models'],
-                           ['/', 'work', 'asr', 'demos', 'morfessor-demo', 'models']]
+                           ['/', 'teamwork', 't40511_asr', 'demos', 'morfessor-demo', 'models']]
 
     model_dir = None
     for pmd in possible_model_dirs:
